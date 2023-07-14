@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 
 # auto_now=True : 수정 일자 = 최종 수정일자, django model이 save 될 때마다 현재날짜로 갱신됨! 
@@ -6,16 +7,18 @@ from django.db import models
 
     
 class User(models.Model):
-    username = models.TextField(blank=True, unique=True)
+    # username = models.TextField(blank=True, unique=True)
+    # aaaid = models.BigAutoField(primary_key=True)
+    # id = models.AutoField(primary_key=True)
     phone = models.TextField(blank=True)
     email = models.TextField(blank=True)
-    user_id = models.TextField(blank=True)
-    user_password = models.TextField(blank=True)
+    users_id = models.TextField(blank=True)
+    users_password = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now = True, blank=True)
     
 class Pet(models.Model):
-    username = models.ForeignKey('User', on_delete=models.CASCADE, blank=True, null=True, db_column="username")
+    user_id = models.ForeignKey("User", on_delete=models.CASCADE, blank=True, null=True, db_column="user_id")
     petname = models.TextField(blank=True, unique=True)
     petage = models.TextField(blank=True)
     petgender = models.TextField(blank=True)
@@ -25,7 +28,7 @@ class Pet(models.Model):
     updated_at = models.DateTimeField(auto_now = True, blank=True)
     
 class Diagnosis(models.Model):
-    petname = models.ForeignKey('Pet', on_delete=models.CASCADE, blank=True, null=True, db_column="petname")
+    pet_id = models.ForeignKey("Pet", on_delete=models.CASCADE, blank=True, null=True, db_column="pet_id")
     petresult = models.TextField(blank=True)
     petresultper = models.TextField(blank=True)
     diagday = models.DateTimeField(auto_now_add=True, blank=True)

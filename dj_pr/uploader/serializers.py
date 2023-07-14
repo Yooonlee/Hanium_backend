@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Diagnosis, User
+from .models import Diagnosis, Pet, User
 
 class DiagnosisSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,6 +9,11 @@ class DiagnosisSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
+        fields = '__all__'
+        
+class PetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pet
         fields = '__all__'
 
 class UploadSerializer(serializers.Serializer):
