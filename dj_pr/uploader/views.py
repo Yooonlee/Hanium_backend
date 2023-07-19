@@ -18,7 +18,7 @@ from django.http import HttpResponse, JsonResponse
 import json
 from django.http import Http404
 from pymongo import MongoClient
-import os
+import os, json
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
 from rest_framework.generics import DestroyAPIView
@@ -39,14 +39,14 @@ connectionString_blob = "DefaultEndpointsProtocol=https;EndpointSuffix=core.wind
 blob_client = BlobServiceClient.from_connection_string(conn_str=connectionString_blob)
 
 # 고객명에 해당하는 컨테이너를 만들고 그 안에 blob을 넣는 코드
-
-# 컨테이너 명  = request.user_id
-# blob(이미지 명) = request.pet_id/업로드시간 
+# 컨테이너 명  =  user_id + pet_id + 생성된 시간
+# blob(이미지 명) = pet_id/업로드시간 
 
 #APIView를 상속받음
 class DiagnosisCreateAPIView(APIView):
-        
-    #     # pet_id에 해당하는 object를 찾는다.
+    
+    # 아래 code 폐기    
+    #  pet_id에 해당하는 object를 찾는다.
     # def get_object(self, pet_id):
     #     # mongodb client 불러오기
     #     client = MongoClient('mongodb+srv://Yooonlee:Yooonlee@boilerplate.eb2feiy.mongodb.net/')
@@ -57,65 +57,34 @@ class DiagnosisCreateAPIView(APIView):
     #     except Pet.DoesNotExist:
     #         raise Http404
     
-    #  # post 메서드를 override
-     # url에서 pet_id를 받아 컨테이너를 만들고  
-     # pet_id/업로드시간 으로 blob 이미지를 저장한다.
+     # post 메서드를 override
+     # form data에서 id(pet_id), user_id 를 받아 컨테이너를 만들고  
+     # form data에서 받은 image로 id(pet_id)/업로드시간 으로 blob 이미지를 저장한다.
     def post(self, request):
-        # petlist = Pet.objects.all()
-        # Pet_selected = collection_pet.find_one({'id' : petpet_id})
-        pet_data = JSONParser().parse(request)
-        pet_serializer = PetSerializer(data=pet_data)
-        if pet_serializer.is_valid():
-            pet_serializer.save()
-            # pet_id= pet_serializer.validated_data['id']
-            # user_id= pet_serializer.validated_data['user_id']
-            pet_id= pet_serializer.data['id']
-            user_id= pet_serializer.data['user_id']
-            container_name =  str(uuid.uuid4()) + str(user_id) + str(pet_id)
-                
-            # 컨테이너 생성 
-            try:
-                container_client = ContainerClient.from_connection_string(conn_str= connectionString_blob, container_name=container_name)
-                container_client.create_container()
-            except ResourceExistsError:
-                print('A container with this name already exists')
-            
+        
+        # react에서 form data로 보내주면 아래와 같이 받음
+        pet_id = request.POST['id']
+        user_id = request.POST['user_id']
+        image = request.FILES.__getitem__('pet_image')
+        
+        now = datetime.now()
+        container_name =  str(user_id) + "-" + str(pet_id) + "-" + str(now.strftime('%Y-%m-%d'))
 
-        return JsonResponse(pet_serializer.data, status=status.HTTP_201_CREATED) 
-
-
-        ########################
+        # 컨테이너 생성 
+        try:
+            container_client = ContainerClient.from_connection_string(conn_str= connectionString_blob, container_name=container_name)
+            container_client.create_container()
+        except ResourceExistsError:
+            container_client = blob_client.get_container_client( container=container_name)
+            print('A container with this name already exists')
+    
         # blob 업로드
-        # def upload_blob_file(self, blob_service_client: BlobServiceClient, container_name: str):
-        #     container_client = blob_service_client.get_container_client(container=container_name)
-            
-        #     file = request.FILES['file']
-        #     now = datetime.now()
-        #     file_upload_name = petname + "/" + now.strftime('%Y-%m-%d %H:%M:%S')
-            
-        #     # with open(file=os.path.join('filepath', 'filename'), mode="rb") as data:
-        #     blob_client = container_client.upload_blob(name=file_upload_name, data=file, overwrite=True)
-        # upload_blob_file(container_name=username)
+        file_upload_name = pet_id + now.strftime('%Y-%m-%d %H:%M:%S')
+        container_client.upload_blob(name=file_upload_name, data=image, overwrite=True)
+      
+        response = {'message' : 'Creating Blob Success'}
+        return Response(response, status=status.HTTP_201_CREATED)
         
-        # response = {'message' : 'Creating Container Success'}
-        # return Response(response, status=status.HTTP_201_CREATED)
-        
-        # try:
-        #     file = request.FILES['file']
-        #     now = datetime.now()
-        #     file_upload_name = request.petname + "/" + now.strftime('%Y-%m-%d %H:%M:%S')
-        #     blob= BlobClient.from_connection_string(conn_str="DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=yooonlee0b79fa;AccountKey=bkMC4GNh75Fi8kA+i4G5MYNrEbdSb+ysk57BO8HtS7F2K67Y3DS7paI/ytKeTh0OI/t8Ch7A1dF9+AStsL0TyQ==;BlobEndpoint=https://yooonlee0b79fa.blob.core.windows.net/;FileEndpoint=https://yooonlee0b79fa.file.core.windows.net/;QueueEndpoint=https://yooonlee0b79fa.queue.core.windows.net/;TableEndpoint=https://yooonlee0b79fa.table.core.windows.net/",
-        #                                             container_name=str(request.username), blob_name=str(file_upload_name))
-        #     blob.upload_blob(file)
-
-        #     response = {'message': 'Blob uploaded'}
-        #     return Response(response, status=status.HTTP_200_OK)
-        # except:
-        #     response = {'message' : 'Creating Container Failed'}
-        #     return Response(response, status=status.HTTP_400_BAD_REQUEST)
-# Create your views here.
-
-
 
 class UserCreateView(View):
     def post(self, request):
