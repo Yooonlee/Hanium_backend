@@ -36,10 +36,10 @@ portalocker==2.7.0
 psycopg2-binary==2.8.6
 pycparser==2.21
 pygments==2.15.1
-pyJWT==2.7.0
+pyjwt==2.7.0
 pymongo==3.12.3
-pyMySQL==1.1.0
-pySocks==1.7.1
+# pymysql==1.1.0
+pysocks==1.7.1
 pytz==2023.3
 requests==2.31.0
 requests-toolbelt==1.0.0
