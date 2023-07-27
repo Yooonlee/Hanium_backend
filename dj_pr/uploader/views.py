@@ -17,7 +17,7 @@ from django.views import View
 from django.http import HttpResponse, JsonResponse
 import json
 from django.http import Http404
-from pymongo import MongoClient
+# from pymongo import MongoClient
 import os, json
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
