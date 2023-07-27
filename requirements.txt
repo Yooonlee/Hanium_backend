@@ -32,7 +32,7 @@ pillow==9.5.0
 pipenv==2023.7.23
 platformdirs==3.8.1
 portalocker==2.7.0
-# psycopg2==2.8.6
+psycopg2==2.8.6
 psycopg2-binary==2.8.6
 pycparser==2.21
 pygments==2.15.1
