@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "AzureWebJobs.HttpTrigger2.Disabled": "true",
+    "HELLO" : "AZURE",
+    "AZURE_ACCOUNT_NAME" : "yooonlee0b79fa", 
+    "AZURE_ACCOUNT_KEY" : "bkMC4GNh75Fi8kA+i4G5MYNrEbdSb+ysk57BO8HtS7F2K67Y3DS7paI/ytKeTh0OI/t8Ch7A1dF9+AStsL0TyQ=="
+  }
+}
