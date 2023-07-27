@@ -234,6 +234,6 @@ MEDIA_ROOT = BASE_DIR.parent / 'media'
 STATICFILES_STORAGE  = 'dj_pr.storages.StaticAzureStorage'
 DEFAULT_FILE_STORAGE  = 'dj_pr.storages.MediaAzureStorage'
 
-AZURE_ACCOUNT_NAME = env.str('yooonlee0b79fa')
-AZURE_ACCOUNT_KEY = env.str('bkMC4GNh75Fi8kA+i4G5MYNrEbdSb+ysk57BO8HtS7F2K67Y3DS7paI/ytKeTh0OI/t8Ch7A1dF9+AStsL0TyQ==')
+# AZURE_ACCOUNT_NAME = env.str('yooonlee0b79fa')
+# AZURE_ACCOUNT_KEY = env.str('bkMC4GNh75Fi8kA+i4G5MYNrEbdSb+ysk57BO8HtS7F2K67Y3DS7paI/ytKeTh0OI/t8Ch7A1dF9+AStsL0TyQ==')
 
