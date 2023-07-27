@@ -24,14 +24,14 @@ from rest_framework.parsers import JSONParser
 from rest_framework.generics import DestroyAPIView
 
 # pymongo를 이용해 mongodb에 연결하는 code
-from pymongo import MongoClient
+# from pymongo import MongoClient
 
-connection_string = "mongodb+srv://Yooonlee:Yooonlee@boilerplate.eb2feiy.mongodb.net/?retryWrites=true&w=majority"
-client = MongoClient(connection_string)
-db = client.get_database('haniumcat')
-collection_user = db.get_collection('User')
-collection_pet = db.get_collection('Pet')
-collection_diagnosis = db.get_collection('Diagnosis')
+# connection_string = "mongodb+srv://Yooonlee:Yooonlee@boilerplate.eb2feiy.mongodb.net/?retryWrites=true&w=majority"
+# client = MongoClient(connection_string)
+# db = client.get_database('haniumcat')
+# collection_user = db.get_collection('User')
+# collection_pet = db.get_collection('Pet')
+# collection_diagnosis = db.get_collection('Diagnosis')
 
 # blob connection string 
 from azure.storage.blob import BlobServiceClient , ContainerClient
@@ -92,7 +92,7 @@ class UserCreateView(View):
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
             user_serializer.save()
-            collection_user.insert(user_serializer.data)
+            # collection_user.insert(user_serializer.data)
             return JsonResponse(user_serializer.data, status=status.HTTP_201_CREATED) 
         return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -102,7 +102,7 @@ class UserDestroyView(View):
         user = user.filter(id__icontains=user_id)
         user.delete()
         # pet.delete_many({"id" : user_id})
-        collection_user.delete_one({"id" : user_id})
+        # collection_user.delete_one({"id" : user_id})
         return JsonResponse({'message': 'User was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
     
 class DiagnosisCreateView(View):
@@ -111,7 +111,7 @@ class DiagnosisCreateView(View):
         diagnosis_serializer = DiagnosisSerializer(data=user_data)
         if diagnosis_serializer.is_valid():
             diagnosis_serializer.save()
-            collection_diagnosis.insert(diagnosis_serializer.data)
+            # collection_diagnosis.insert(diagnosis_serializer.data)
             return JsonResponse(diagnosis_serializer.data, status=status.HTTP_201_CREATED) 
         return JsonResponse(diagnosis_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -123,7 +123,7 @@ class PetCreateView(View):
         
         if pet_serializer.is_valid():
             pet_serializer.save()
-            collection_pet.insert(pet_serializer.data)
+            # collection_pet.insert(pet_serializer.data)
             return JsonResponse(pet_serializer.data, status=status.HTTP_201_CREATED) 
         return JsonResponse(pet_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # 해당 속성값만 가져옴
@@ -159,7 +159,7 @@ class PetDestroyView(View):
         pet = pet.filter(id__icontains=pet_id)
         pet.delete()
         # pet.delete_many({"id" : pet_id})
-        collection_pet.delete_many({"id" : pet_id})
+        # collection_pet.delete_many({"id" : pet_id})
         return JsonResponse({'message': 'Pet was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
     

@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     
     'rest_framework',
     'corsheaders',
+    "whitenoise.runserver_nostatic",
     
     'blog',
     'uploader',
@@ -72,6 +73,9 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
+
+    
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -211,13 +215,17 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
+
+STATIC_URL = os.environ.get("DJANGO_STATIC_URL", "/static/")  
+STATIC_ROOT = os.environ.get("DJANGO_STATIC_ROOT", "./static/")  
+STATICFILES_STORAGE = ('whitenoise.storage.CompressedManifestStaticFilesStorage')
 
 # 미디어 경로를 추가
 MEDIA_URL = '/media/' 

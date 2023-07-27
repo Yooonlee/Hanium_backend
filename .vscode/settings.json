@@ -7,5 +7,7 @@
     "debug.internalConsoleOptions": "neverOpen",
     "python.analysis.extraPaths": [
         "./dj_pr"
-    ]
+    ],
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/c05ccbda-fea4-440d-aeb8-14c8eadad033/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/app-haniumbackend-0726",
+    "appService.deploySubpath": "."
 }
