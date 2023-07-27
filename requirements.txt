@@ -11,7 +11,7 @@ configparser==6.0.0
 cryptography==41.0.1
 defusedxml==0.7.1
 distlib==0.3.6
-Django==3.0.14
+django==3.0.14
 django-cors-headers==4.2.0
 django-environ==0.10.0
 django-storages==1.12.3
@@ -28,18 +28,18 @@ msal==1.22.0
 msal-extensions==1.0.0
 multidict==6.0.4
 mysqlclient==2.2.0
-Pillow==9.5.0
+pillow==9.5.0
 pipenv==2023.7.23
 platformdirs==3.8.1
 portalocker==2.7.0
 # psycopg2==2.8.6
 psycopg2-binary==2.8.6
 pycparser==2.21
-Pygments==2.15.1
-PyJWT==2.7.0
+pygments==2.15.1
+pyJWT==2.7.0
 pymongo==3.12.3
-PyMySQL==1.1.0
-PySocks==1.7.1
+pyMySQL==1.1.0
+pySocks==1.7.1
 pytz==2023.3
 requests==2.31.0
 requests-toolbelt==1.0.0
