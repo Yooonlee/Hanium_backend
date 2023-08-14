@@ -9,7 +9,7 @@ from django.db import models
 class User(models.Model):
     # username = models.TextField(blank=True, unique=True)
     # aaaid = models.BigAutoField(primary_key=True)
-    # id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     phone = models.TextField(blank=True)
     email = models.TextField(blank=True)
     users_id = models.TextField(blank=True, unique=True)
@@ -18,6 +18,7 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now = True, blank=True)
     
 class Pet(models.Model):
+    id = models.AutoField(primary_key=True)
     users_id = models.ForeignKey("User", to_field="users_id", on_delete=models.CASCADE, blank=True, null=True, db_column="users_id")
     petname = models.TextField(blank=True, unique=True)
     petage = models.TextField(blank=True)
@@ -28,6 +29,7 @@ class Pet(models.Model):
     updated_at = models.DateTimeField(auto_now = True, blank=True)
     
 class Diagnosis(models.Model):
+    id = models.AutoField(primary_key=True)
     pet_name = models.ForeignKey("Pet", to_field="petname",  on_delete=models.CASCADE, blank=True, null=True, db_column="pet_name")
     petresult = models.TextField(blank=True)
     petresultper = models.TextField(blank=True)
@@ -38,6 +40,7 @@ class Diagnosis(models.Model):
     updated_at = models.DateTimeField(auto_now = True, blank=True)
     
 class Upload(models.Model):
+    id = models.AutoField(primary_key=True)
     photo = models.ImageField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now = True, blank=True)

@@ -1,6 +1,6 @@
 import uuid
 from django.shortcuts import render
-from rest_framework import viewsets, status
+from rest_framework import  status, parsers
 from rest_framework.views import APIView
 from .models import Diagnosis, Upload, Pet, User
 from .serializers import DiagnosisSerializer, PetSerializer, UploadSerializer, UserSerializer
@@ -24,6 +24,8 @@ from rest_framework.views import APIView
 from drf_yasg.utils       import swagger_auto_schema
 from drf_yasg             import openapi 
 from .serializers import *
+##  ImageField Swagger에 표시
+from rest_framework.decorators import parser_classes
 
 # pymongo를 이용해 mongodb에 연결하는 code
 # from pymongo import MongoClient
@@ -47,6 +49,7 @@ blob_client = BlobServiceClient.from_connection_string(conn_str=connectionString
 #APIView를 상속받음
 class DiagnosisCreateAPIView(APIView):
     @swagger_auto_schema(request_body=GetDiagnosisUploadSerializer, responses={"201":GetResponseSerializer})
+
     # 아래 code 폐기    
     #  pet_id에 해당하는 object를 찾는다.
     # def get_object(self, pet_id):
@@ -58,10 +61,11 @@ class DiagnosisCreateAPIView(APIView):
     #         return db.Pet.find_one(id=pet_id)
     #     except Pet.DoesNotExist:
     #         raise Http404
-    
+
      # post 메서드를 override
      # form data에서 pet_name, user_id 를 받아 컨테이너를 만들고  
      # form data에서 받은 image로 pet_name/업로드시간 으로 blob 이미지를 저장한다.
+    @parser_classes((parsers.FormParser ,parsers.MultiPartParser, parsers.FileUploadParser))
     def post(self, request):
         
         # react에서 form data로 보내주면 아래와 같이 받음
@@ -104,29 +108,29 @@ class UserCreateView(APIView):
 # 해당 속성값만 가져옴
 class UserRetrieveView(APIView):
     @swagger_auto_schema(query_serializer=GetUserRequestSerializer, responses={"200":GetUserResponseManySerializer})
-    def get(self, users_id):
+    def get(self, request, users_id):
         user = User.objects.all()
         User_Serializer = UserSerializer(user, many=True)
         try: 
             user = user.filter(users_id__icontains=users_id)
-            UserSerializer = UserSerializer(user, many=True)
+            User_Serializer = UserSerializer(user, many=True)
         except:
-            return JsonResponse(UserSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(User_Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         # UserSerializer = UserSerializer(user, many=True)
         
-        return JsonResponse({'message': 'user info success'}, UserSerializer.data, safe=False, status=status.HTTP_200_OK)
+        return JsonResponse(User_Serializer.data, safe=False, status=status.HTTP_200_OK)
 # 다 가져옴 
 class UserListView(APIView):
     @swagger_auto_schema( responses={"200":GetUserResponseManySerializer})
     def get(self, request):
         user = User.objects.all()
-        UserSerializer = UserSerializer(user, many=True) 
-        return JsonResponse({'message': 'user info success'},UserSerializer.data, safe=False, status=status.HTTP_200_OK)
+        User_Serializer = UserSerializer(user, many=True) 
+        return JsonResponse(User_Serializer.data, safe=False, status=status.HTTP_200_OK)
 
 
 class UserDestroyView(APIView):
     @swagger_auto_schema(query_serializer=GetUserRequestSerializer, responses={"204":GetResponseSerializer})
-    def get(self, users_id):
+    def get(self, request, users_id):
         user = User.objects.all()
         user = user.filter(users_id__icontains=users_id)
         user.delete()
@@ -136,8 +140,8 @@ class UserDestroyView(APIView):
     
     
 class UserUpdateView(APIView):
-    @swagger_auto_schema(query_serializer = GetUserRequestSerializer,request_body=GetUserUpdateRequestSerializer, responses={"200":GetResponseSerializer})
-    def post(request, users_id):
+    @swagger_auto_schema(request_body=GetUserUpdateRequestSerializer, responses={"200":GetResponseSerializer})
+    def post(self, request, users_id):
         user = User.objects.get(users_id = users_id)
         tutorial_data = JSONParser().parse(request) 
         tutorial_serializer = UserSerializer(user, data=tutorial_data) 
@@ -160,24 +164,19 @@ class DiagnosisCreateView(APIView):
 # 해당 속성값만 가져옴
 class DiagnosisRetrieveView(APIView):
     @swagger_auto_schema(query_serializer=GetDiagnosisRequestSerializer, responses={"200":GetDiagnosisResponseManySerializer})
-    def get(self, pet_name):
+    def get(self, request,pet_name):
         diagnosis = Diagnosis.objects.all()
+        diagnosis = diagnosis.filter(pet_name__petname__icontains=pet_name)
         Diagnosis_Serializer = DiagnosisSerializer(diagnosis, many=True)
-        try: 
-            diagnosis = diagnosis.filter(pet_name__icontains=pet_name)
-            Diagnosis_Serializer = DiagnosisSerializer(diagnosis, many=True)
-        except:
-            return JsonResponse(Diagnosis_Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        # UserSerializer = UserSerializer(user, many=True)
         
-        return JsonResponse({'message': 'user info success'}, Diagnosis_Serializer.data, safe=False, status=status.HTTP_200_OK)
+        return JsonResponse( Diagnosis_Serializer.data, safe=False, status=status.HTTP_200_OK)
 # 다 가져옴 
 class DiagnosisListView(APIView):
     @swagger_auto_schema( responses={"200":GetDiagnosisResponseManySerializer})
-    def get(self):
+    def get(self, request):
         diagnosis = Diagnosis.objects.all()
         Diagnosis_Serializer = DiagnosisSerializer(diagnosis, many=True) 
-        return JsonResponse({'message': 'user info success'},Diagnosis_Serializer.data, safe=False, status=status.HTTP_200_OK)
+        return JsonResponse(Diagnosis_Serializer.data, safe=False, status=status.HTTP_200_OK)
 
 
 class PetCreateView(APIView):
@@ -194,44 +193,42 @@ class PetCreateView(APIView):
 # 해당 속성값만 가져옴
 class PetRetrieveView(APIView):
     @swagger_auto_schema(query_serializer=GetPetRequestSerializer, responses={"200":GetPetResponseManySerializer})
-    def get(self, petname):
+    def get(self, request, petname):
         pet = Pet.objects.all()
+        
+        pet = pet.filter(petname__icontains=petname)
         Pet_Serializer = PetSerializer(pet, many=True)
-        try: 
-            pet = pet.filter(petname__icontains=petname)
-            Pet_Serializer = PetSerializer(pet, many=True)
-        except:
-            return JsonResponse(Pet_Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         # Pet_Serializer = PetSerializer(pet, many=True)
         
-        return JsonResponse({'message': 'Pet info success'}, Pet_Serializer.data, safe=False, status=status.HTTP_200_OK)
+        return JsonResponse( Pet_Serializer.data, safe=False, status=status.HTTP_200_OK)
 # 다 가져옴 
 class PetListView(APIView):
     @swagger_auto_schema( responses={"200":GetPetResponseManySerializer})
     def get(self, request):
         pet = Pet.objects.all()
         Pet_Serializer = PetSerializer(pet, many=True) 
-        return JsonResponse({'message': 'Pet info success'},Pet_Serializer.data, safe=False, status=status.HTTP_200_OK)
+       
+        return JsonResponse(Pet_Serializer.data, safe=False, status=status.HTTP_200_OK)
         
 
 class PetDestroyView(APIView):
     @swagger_auto_schema(query_serializer=GetPetRequestSerializer, responses={"204":GetResponseSerializer})
-    def get(self, petname):
+    def get(self, request, petname):
         pet = Pet.objects.all()
         pet = pet.filter(petname__icontains=petname)
         pet.delete()
         # pet.delete_many({"petname" : petname})
         # collection_pet.delete_many({"id" : petname})
-        return JsonResponse({'message': 'Pet was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+        return JsonResponse(status=status.HTTP_204_NO_CONTENT)
 
     
 class PetUpdateView(APIView):
-    @swagger_auto_schema(query_serializer = GetPetRequestSerializer,request_body=GetPetUpdateRequestSerializer, responses={"200":GetResponseSerializer})
-    def post(request, petname):
-        pet = Pet.objects.get(id = petname)
+    @swagger_auto_schema(request_body=GetPetUpdateRequestSerializer, responses={"200":GetResponseSerializer})
+    def post(self,request, petname):
+        pet = Pet.objects.get(petname = petname)
         tutorial_data = JSONParser().parse(request) 
         tutorial_serializer = PetSerializer(pet, data=tutorial_data) 
         if tutorial_serializer.is_valid(): 
             tutorial_serializer.save() 
             return JsonResponse(tutorial_serializer.data, status=status.HTTP_200_OK) 
-        return JsonResponse({'message': tutorial_serializer.errors}, status=status.HTTP_400_BAD_REQUEST) 
+        return JsonResponse( status=status.HTTP_400_BAD_REQUEST) 

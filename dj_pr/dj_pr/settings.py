@@ -41,7 +41,7 @@ except(IOError, KeyError):
 SECRET_KEY = '5(!&t(*4iz)c1k(=ygr8ivbpeoe-p7ex7uz@7rvzdg+9u8!5p+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 

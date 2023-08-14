@@ -2,28 +2,28 @@ from rest_framework import serializers
 from .models import Diagnosis, Pet, User
 
 class DiagnosisSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
+    # id = serializers.IntegerField()
 
     class Meta:
         model = Diagnosis
         fields = '__all__'
         
 class UserSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
+    # id = serializers.IntegerField()
 
     class Meta:
         model = User
         fields = '__all__'
         
 class PetSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
+    # id = serializers.IntegerField()
 
     class Meta:
         model = Pet
         fields = '__all__'
 
 class UploadSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    # id = serializers.IntegerField()
 
     userList = UserSerializer(many=True)
     diagList = DiagnosisSerializer(many=True)
@@ -32,17 +32,28 @@ class UploadSerializer(serializers.Serializer):
 #### Swagger - GetSerailizer
 class GetUserRequestSerializer(serializers.Serializer):
     users_id = serializers.CharField()
-      
 
-class GetUserUpdateInnerDictSerializer(serializers.Serializer):
+class GetUserCreateInnerDictSerializer(serializers.Serializer):
     phone = serializers.CharField()
     email = serializers.CharField()
     users_id = serializers.CharField()
     users_password = serializers.CharField()
 
 class GetUserCreateSerializer(serializers.Serializer):
-    user_data = GetUserUpdateInnerDictSerializer(many=True)
+    user_data = GetUserCreateInnerDictSerializer(many=True)
+    
+class GetUserUpdateInnerDictSerializer(serializers.Serializer):
+    users_id = serializers.CharField(help_text = "url querystring 으로 전송")
+    phone = serializers.CharField()
+    email = serializers.CharField()
+    users_password = serializers.CharField()
 
+class GetUserUpdateRequestSerializer(serializers.Serializer):
+    # tutorial_data = serializers.ListField()
+    tutorial_data = GetUserUpdateInnerDictSerializer(many=True)
+    
+class GetUserRequestSerializer(serializers.Serializer):
+    users_id = serializers.CharField()
 
 class GetUserInnerDictSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -50,20 +61,8 @@ class GetUserInnerDictSerializer(serializers.Serializer):
     email = serializers.CharField()
     users_id = serializers.CharField()
     users_password = serializers.CharField()    
-    
-class GetUserUpdateInnerDictSerializer(serializers.Serializer):
-    phone = serializers.CharField()
-    email = serializers.CharField()
-    users_id = serializers.CharField()
-    users_password = serializers.CharField()
-
-class GetUserRequestSerializer(serializers.Serializer):
-    users_id = serializers.CharField()
-
-
-class GetUserUpdateRequestSerializer(serializers.Serializer):
-    # tutorial_data = serializers.ListField()
-    tutorial_data = GetUserUpdateInnerDictSerializer(many=True)
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
     
 class GetUserResponseManySerializer(serializers.Serializer):
     status = serializers.CharField()
@@ -90,8 +89,16 @@ class GetPetInnerDictSerializer(serializers.Serializer):
     status = serializers.CharField()    
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
-        
+
+class GetPetCreateInnerDictSerializer(serializers.Serializer):
+    users_id = serializers.CharField()
+    petname = serializers.CharField()
+    petage = serializers.IntegerField()
+    petgender = serializers.CharField()
+    petcomment = serializers.CharField()
+    status = serializers.CharField()            
 class GetPetUpdateInnerDictSerializer(serializers.Serializer):
+    petname = serializers.CharField(help_text = "url querystring 으로 전송")
     users_id = serializers.CharField()
     petname = serializers.CharField()
     petage = serializers.IntegerField()
@@ -100,11 +107,10 @@ class GetPetUpdateInnerDictSerializer(serializers.Serializer):
     status = serializers.CharField()    
 
 class GetPetCreateSerializer(serializers.Serializer):
-    pet_data = GetPetUpdateInnerDictSerializer(many=True)
+    pet_data = GetPetCreateInnerDictSerializer(many=True)
 
 class GetPetRequestSerializer(serializers.Serializer):
     petname = serializers.CharField()
-
 
 class GetPetUpdateRequestSerializer(serializers.Serializer):
     # tutorial_data = serializers.ListField()
@@ -151,6 +157,8 @@ class GetDiagnosisInnerDictSerializer(serializers.Serializer):
     petresultper = serializers.FloatField()
     diagday = serializers.TimeField()
     photo = serializers.ImageField()    
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
 
 class GetDiagnosisResponseManySerializer(serializers.Serializer):
     status = serializers.CharField()
