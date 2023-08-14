@@ -41,22 +41,24 @@ except(IOError, KeyError):
 SECRET_KEY = '5(!&t(*4iz)c1k(=ygr8ivbpeoe-p7ex7uz@7rvzdg+9u8!5p+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
     
     'rest_framework',
+    'django.contrib.auth',
     'corsheaders',
     "whitenoise.runserver_nostatic",
     
@@ -222,17 +224,25 @@ USE_L10N = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 # STATIC_URL = '/static/'
-
+## local 
 STATIC_URL = os.environ.get("DJANGO_STATIC_URL", "/static/")  
-STATIC_ROOT = os.environ.get("DJANGO_STATIC_ROOT", "./static/")  
-STATICFILES_STORAGE = ('whitenoise.storage.CompressedManifestStaticFilesStorage')
+STATIC_ROOT = os.environ.get("DJANGO_STATIC_ROOT", "_static")  
+
+
+## azure_ver 
+# STATIC_URL = os.environ.get("DJANGO_STATIC_URL", "/static/")  
+# # STATIC_ROOT : azure 관련 없음
+# STATIC_ROOT = os.environ.get("DJANGO_STATIC_ROOT", "_static")  
+# STATICFILES_STORAGE = ('whitenoise.storage.CompressedManifestStaticFilesStorage')
+
+# STATICFILES_STORAGE  = 'dj_pr.storages.StaticAzureStorage'
+# DEFAULT_FILE_STORAGE  = 'dj_pr.storages.MediaAzureStorage'
 
 # 미디어 경로를 추가
 MEDIA_URL = '/media/' 
 MEDIA_ROOT = BASE_DIR.parent / 'media'
 
-STATICFILES_STORAGE  = 'dj_pr.storages.StaticAzureStorage'
-DEFAULT_FILE_STORAGE  = 'dj_pr.storages.MediaAzureStorage'
+
 
 # AZURE_ACCOUNT_NAME = env.str('yooonlee0b79fa')
 # AZURE_ACCOUNT_KEY = env.str('bkMC4GNh75Fi8kA+i4G5MYNrEbdSb+ysk57BO8HtS7F2K67Y3DS7paI/ytKeTh0OI/t8Ch7A1dF9+AStsL0TyQ==')
