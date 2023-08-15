@@ -41,7 +41,7 @@ except(IOError, KeyError):
 SECRET_KEY = '5(!&t(*4iz)c1k(=ygr8ivbpeoe-p7ex7uz@7rvzdg+9u8!5p+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -233,10 +233,10 @@ STATIC_ROOT = os.environ.get("DJANGO_STATIC_ROOT", "_static")
 # STATIC_URL = os.environ.get("DJANGO_STATIC_URL", "/static/")  
 # # STATIC_ROOT : azure 관련 없음
 # STATIC_ROOT = os.environ.get("DJANGO_STATIC_ROOT", "_static")  
-# STATICFILES_STORAGE = ('whitenoise.storage.CompressedManifestStaticFilesStorage')
+# STATICFILES_STORAGE = ('whitenoise.storage.CompressedManifestStaticFilesStorage') ## 배포관련?
 
-# STATICFILES_STORAGE  = 'dj_pr.storages.StaticAzureStorage'
-# DEFAULT_FILE_STORAGE  = 'dj_pr.storages.MediaAzureStorage'
+STATICFILES_STORAGE  = 'dj_pr.storages.StaticAzureStorage'
+DEFAULT_FILE_STORAGE  = 'dj_pr.storages.MediaAzureStorage'
 
 # 미디어 경로를 추가
 MEDIA_URL = '/media/' 
